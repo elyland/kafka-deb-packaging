@@ -1,0 +1,23 @@
+#!/bin/sh
+
+USER="kafka"
+GROUP="kafka"
+
+if ! getent group $GROUP >/dev/null; then
+        addgroup --system $GROUP >/dev/null
+fi
+
+if ! getent passwd $USER >/dev/null; then
+        adduser \
+          --system \
+          --disabled-login \
+          --ingroup $GROUP \
+          --no-create-home \
+          --home /nonexistent \
+          --gecos "Kafka Broker" \
+          --shell /bin/false \
+          $USER  >/dev/null
+fi
+
+chown $USER:$GROUP /var/log/kafka
+chown $USER:$GROUP /var/lib/kafka
